@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace palm2
 {
@@ -6,65 +6,91 @@ namespace palm2
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Виберіть метод вводу: -1 = Рандом, 1 = з клавіатури");
+            int input = int.Parse(Console.ReadLine());
             Console.WriteLine("Введіть кількість рядків");
-            int i = int.Parse(Console.ReadLine());
+            int n = int.Parse(Console.ReadLine());
             Console.WriteLine("Введіть кількість стовпчиків");
-            int j = int.Parse(Console.ReadLine());
-            int[,] arr = new int[i, j];
+            int m = int.Parse(Console.ReadLine());
             Console.WriteLine("Ваш масив");
-            ArrayRandom(arr); //створюється рандомний масив
-            LastNegative(arr);//шукається невід*ємний рядок
+            int[,] arr = new int[n, m];
+            if (input == 1)
+            {
+                Keyboard(arr, n, m);
+            }
+            if (input == -1)
+            {
+                ArrayRandom(arr, n, m);
+            }
+            LastNegative(arr, n, m);//шукається невід*ємний рядок
             Console.ReadLine();
         }
-        static void ArrayRandom(int[,] arr)
+        static void Keyboard(int[,] arr, int n, int m)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                string inputstr = Console.ReadLine();
+                string[] str = inputstr.Split(new char[] { ' ' });
+                for (int j = 0; j < m; j++)
+                {
+                    arr[i, j] = int.Parse(str[j]);
+                }
+            }
+        }
+        static void ArrayRandom(int[,] arr, int n, int m)
         {
 
             Random rnd = new Random();
-            for (int i = 0; i < arr.GetLength(0); i++)
+            for (int i = 0; i < n; i++)
             {
                 Console.WriteLine();
-                for (int j = 0; j < arr.GetLength(1); j++)
+                for (int j = 0; j < m; j++)
                 {
                     arr[i, j] = rnd.Next(-5, 10);
                     Console.Write(" {0}", arr[i, j]);
                 }
             }
         }
-        static void LastNegative(int[,] arr)
+        static void LastNegative(int[,] arr, int n, int m)
         {
 
-            int k = 0;//"перевірочна" змінна, можна було використати bool
-            int last = 0;//змінна для зберігання індексу рядка
-            for (int i = 0; i < arr.GetLength(0); i++)//починаємо з нуля, тому що можемо пропустити перший елемент, а він може бути від'ємним
+            int last = 0;
+            int count = 0; 
+            int glass = 0;
+
+            for (int i = 0; i < n; i++)//цикл, который проходит по всем элементам и учит ненужные нам строчки заранее
             {
-                for (int j = 0; j < arr.GetLength(1); j++)
+                for (int j = 0; j < m; j++)
                 {
-                    if (arr[i, j] < 0)//якщо елемент масиву від*ємний
+                    if (arr[i, j] < 0)
                     {
-                        k = 0;//так і залишаємо його
-                        break;
-                    }
-                    if (arr[i, j] > 0)//якщо елемент більше нуля
-                    {
-                        k = 1;//змінюємо перевірочну змінну
-                    }
-                    if (k == 1)//перевіряємо, чи дорівнює К потрібному значенню
-                    {
-                        last = i;//якщо є, присвоюємо їй індекс рядка
+                        count = 1;
+                        glass = j;
                     }
                 }
 
             }
-            if (k == 0)//перевіряємо, чи змінилась взагалі К
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+
+                    if (arr[i, j] >= 0 && glass != j)//сравнивает, нету ли ненужных нам строчек из созданного ранее списка
+                    {
+                        last = i;
+                        count = 0;
+                    }
+                }
+            }
+
+            if (count != 0)
             {
                 Console.WriteLine("\nТаких немає");
             }
             else
             {
-                Console.WriteLine($"\nОстанній рядок: {last + 1}"); // +1 тому що i = 0
+                Console.WriteLine($"\n{last + 1}");
             }
         }
-
-
     }
 }
